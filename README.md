@@ -1,4 +1,4 @@
-#Item Sell Price Control v1.0, by Feldherren (rpaliwoda AT googlemail.com)
+# Item Sell Price Control v1.0, by Feldherren (rpaliwoda AT googlemail.com)
  
 Allows you to set whether item selling price is calculated based on the 
 database price, or the shop price; by default RPG Maker MV only has the 
