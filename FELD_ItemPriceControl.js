@@ -10,7 +10,11 @@
  * @desc Default multiplier to use when calculating sell price.
  * @default 0.5
  *
- * @help Item Sell Price Control v1.0, by Feldherren (rpaliwoda AT googlemail.com)
+ * @help Item Sell Price Control v1.1, by Feldherren (rpaliwoda AT googlemail.com)
+ 
+Changelog:
+1.1: can now explicitly set item buy and sell prices
+1.0: initial commit
  
 Allows you to set whether item selling price is calculated based on the 
 database price, or the shop price; by default RPG Maker MV only has the 
@@ -19,6 +23,9 @@ custom price for the item in question.
 
 Additionally, allows you to change the sell-price multiplier from game
 start (as a plugin parameter), and mid-game (via plugin command).
+
+Finally, allows you to outright set buy and sell prices (which overrides 
+the above settings), and unset the same.
 
 Plugin commands:
 SETSELLPRICEDEPENDENCY [shop|database]
@@ -29,26 +36,28 @@ Changes the sell-price multiplier to the specified float.
 SETSELLPRICE [item|weapon|armor] [id] [price]
 Sets the selling price for the item/weapon/armor with the specified ID to the given price.
 UNSETSELLPRICE [item|weapon|armor] [id]
+Unsets a defined selling price for the item/weapon/armor with the specified ID.
 SETBUYPRICE [item|weapon|armor] [id] [price]
 Sets the buying price for the item/weapon/armor with the specified ID to the given price.
 UNSETBUYPRICE [item|weapon|armor] [id]
+Unsets a defined buying price for the item/weapon/armor with the specified ID.
 
 Free for use with commercial projects, though I'd appreciate being
 contacted if you do use it in any games, just to know.
  */ 
 (function(){
-	var parameters = PluginManager.parameters('FELD_ItemSellPriceControl');
+	var parameters = PluginManager.parameters('FELD_ItemPriceControl');
 	
 	var shopSellPriceDependentOnShopBuyPrice = (parameters["Item Sell Price Dependent on Shop Price"] == 'shop');;
 	var sellMultiplier = parseFloat(parameters["Item Sell Price Multiplier"]);
 	
-	var itemBuyPrices = new Array();
-	var weaponBuyPrices = new Array();
-	var armorBuyPrices = new Array();
+	var itemBuyPrices = new Object();
+	var weaponBuyPrices = new Object();
+	var armorBuyPrices = new Object();
 	
-	var itemSellPrices = new Array();
-	var weaponSellPrices = new Array();
-	var armorSellPrices = new Array();
+	var itemSellPrices = new Object();
+	var weaponSellPrices = new Object();
+	var armorSellPrices = new Object();
 
 	// new sellingPrice function
 	var oldSellingPrice = Scene_Shop.prototype.sellingPrice;
@@ -173,6 +182,36 @@ contacted if you do use it in any games, just to know.
 			else if (args[0] == 'armor')
 			{
 				armorBuyPrices[parseInt(args[1])] = parseInt(args[2]);
+			}
+		}
+		else if(command == "UNSETSELLPRICE" && args[0] != null && args[1] != null)
+		{
+			if (args[0] == 'item')
+			{
+				delete itemSellPrices[parseInt(args[1])];
+			}
+			else if (args[0] == 'weapon')
+			{
+				delete weaponSellPrices[parseInt(args[1])];
+			}
+			else if (args[0] == 'armor')
+			{
+				delete armorSellPrices[parseInt(args[1])];
+			}
+		}
+		else if(command == "UNSETBUYPRICE" && args[0] != null && args[1] != null)
+		{
+			if (args[0] == 'item')
+			{
+				delete itemBuyPrices[parseInt(args[1])];
+			}
+			else if (args[0] == 'weapon')
+			{
+				delete weaponBuyPrices[parseInt(args[1])];
+			}
+			else if (args[0] == 'armor')
+			{
+				delete armorBuyPrices[parseInt(args[1])];
 			}
 		}
 	}
