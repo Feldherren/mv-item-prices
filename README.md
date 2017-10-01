@@ -9,8 +9,8 @@ Additionally, allows you to change the sell-price multiplier from game
 start (as a plugin parameter), and mid-game (via plugin command).
 
 ## Plugin commands
-###SETSELLPRICEDEPENDENCY [shop|database]
+### SETSELLPRICEDEPENDENCY [shop|database]
 Changes whether the sell price is dependent on the shop value, or the database value,
 of an item.
-###SELLINGMULTIPLIER [float]
+### SELLINGMULTIPLIER [float]
 Changes the sell-price multiplier to the specified float.
