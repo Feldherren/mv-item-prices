@@ -22,7 +22,7 @@
  * @desc Whether the set buy price multiplier affects explicitly set sell prices.
  * @default false
  *
- * @help Item Price Control v1.1, by Feldherren (rpaliwoda AT googlemail.com)
+ * @help Item Price Control v1.3.0, by Feldherren (rpaliwoda AT googlemail.com)
  
 Changelog:
 1.3: fixed how buying price was being determined, is now displayed properly 
