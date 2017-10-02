@@ -22,14 +22,16 @@
  * @desc Whether the set buy price multiplier affects explicitly set sell prices.
  * @default false
  *
- * @help Item Price Control v1.3.0, by Feldherren (rpaliwoda AT googlemail.com)
+ * @help Item Price Control v1.3.1, by Feldherren (rpaliwoda AT googlemail.com)
  
 Changelog:
-1.3: fixed how buying price was being determined, is now displayed properly 
-in shop item list
-1.2: can now set item buy price multipler via plugin parameter and command
-1.1: can now explicitly set item buy and sell prices
-1.0: initial commit
+1.3.1:	fixed issue where plugin commands referred to an entirely different 
+		script
+1.3.0:	changed how buying price was being determined, is now displayed properly 
+		in shop item list
+1.2.0:	can now set item buy price multipler via plugin parameter and command
+1.1.0:	can now explicitly set item buy and sell prices
+1.0.0:	initial commit
  
 Allows you to set whether item selling price is calculated based on the 
 database price, or the shop price; by default RPG Maker MV only has the 
@@ -183,12 +185,12 @@ contacted if you do use it in any games, just to know.
 		return Math.floor(sellingPrice);
 	};
 
-	var Feld_InventoryValue_aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
+	var FELD_ItemPriceControl_aliasPluginCommand = Game_Interpreter.prototype.pluginCommand;
 
 	Game_Interpreter.prototype.pluginCommand = function(command, args)
 	{
 
-		Feld_InventoryValue_aliasPluginCommand.call(this,command,args);
+		FELD_ItemPriceControl_aliasPluginCommand.call(this,command,args);
 		if(command == "SETSELLPRICEDEPENDENCY" && args[0] != null)
 		{
 			if (args[0] == 'shop')
