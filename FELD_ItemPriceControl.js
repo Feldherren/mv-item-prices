@@ -11,7 +11,7 @@
  * @default 0.5
  *
  * @param Sell Price Multiplier Affects Explicitly Set Prices
- * @desc Whether the set buy price multiplier affects explicitly set buy prices; true/false
+ * @desc Whether the sell price multiplier affects explicitly set buy prices; true/false
  * @default false
  *
  * @param Item Buy Price Multiplier
@@ -19,12 +19,14 @@
  * @default 1.0
  *
  * @param Buy Price Multiplier Affects Explicitly Set Prices
- * @desc Whether the set buy price multiplier affects explicitly set sell prices; true/false
+ * @desc Whether the buy price multiplier affects explicitly set sell prices; true/false
  * @default false
  *
  * @help Item Price Control v1.3.2, by Feldherren (rpaliwoda AT googlemail.com)
  
 Changelog:
+1.4.0:	can now set categories for items, weapons and armor via notebox tags,
+		and apply a modifier for entire categories of items
 1.3.2:	fixed issue where buying price was not changed for an item after 
 		attempting to explicitly change buying price for it
 1.3.1:	fixed issue where plugin commands referred to an entirely different 
@@ -40,7 +42,7 @@ database price, or the shop price; by default RPG Maker MV only has the
 selling price dependent on the database price, even if the shop has a 
 custom price for the item in question.
 
-Additionally, allows you to change the sell-price and buy-price multiplier 
+Allows you to change the sell-price and buy-price multiplier 
 from game start (as a plugin parameter), and mid-game (via plugin command).
 Note:if you change the buying price multiplier, and have selling price 
 determined by shop price (and not explicitly set for an item), this will 
@@ -48,8 +50,15 @@ affect selling price. For example, if you have a buying price multiplier
 of 1.1, a selling price multiplier of 1.0, and the item price is set to
 20, the item will both buy and sell for 22.
 
-Finally, allows you to outright set buy and sell prices (which overrides 
+Allows you to outright set buy and sell prices (which overrides 
 the above settings), and unset the same.
+
+Allows you to set categories for items, weapons and armor, and set multipliers
+to be applied to all bought or sold items with that category.
+
+Note that all applicable multipliers are applied, not just one. For example, 
+a general multiplier of 1.1 and a category multiplier of 1.1 effectively 
+become a total multiplier of 1.21.
 
 Notebox tags:
 Items, Weapons and Armor:
@@ -122,7 +131,13 @@ contacted if you do use it in any games, just to know.
 		{
 			categories = item.meta.category.split(',');
 		}
-		console.log(item.name, ": ", categories);
+		for (i in categories)
+		{
+			if (categories[i] in categoryBuyMultipliers)
+			{
+				buyMultiplier = buyMultiplier * categoryBuyMultipliers[categories[i]];
+			}
+		}
 		if (DataManager.isItem(item)/* && this._item.itypeId === 1*/) // item
 		{
 			if (item.id in itemBuyPrices)
@@ -166,6 +181,18 @@ contacted if you do use it in any games, just to know.
 		var sellingPrice = oldSellingPrice.call(this);
 		// calculating sellMultiplier
 		var sellMultiplier = generalSellMultiplier;
+		var categories = [];
+		if (item.meta.category)
+		{
+			categories = item.meta.category.split(',');
+		}
+		for (i in categories)
+		{
+			if (categories[i] in categoryBuyMultipliers)
+			{
+				sellMultiplier = sellMultiplier * categorySellMultipliers[categories[i]];
+			}
+		}
 		// check that shopSellPriceDependentOnShopBuyPrice is true
 		if (shopSellPriceDependentOnShopBuyPrice) // dependent on shop value
 		{
