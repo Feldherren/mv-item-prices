@@ -22,7 +22,7 @@
  * @desc Whether the buy price multiplier affects explicitly set sell prices; true/false
  * @default false
  *
- * @help Item Price Control v1.3.2, by Feldherren (rpaliwoda AT googlemail.com)
+ * @help Item Price Control v1.4.0, by Feldherren (rpaliwoda AT googlemail.com)
  
 Changelog:
 1.4.0:	can now set categories for items, weapons and armor via notebox tags,
