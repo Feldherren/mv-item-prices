@@ -22,9 +22,11 @@
  * @desc Whether the set buy price multiplier affects explicitly set sell prices.
  * @default false
  *
- * @help Item Price Control v1.3.1, by Feldherren (rpaliwoda AT googlemail.com)
+ * @help Item Price Control v1.3.2, by Feldherren (rpaliwoda AT googlemail.com)
  
 Changelog:
+1.3.2:	fixed issue where buying price was not changed for an item after 
+		attempting to explicitly change buying price for it
 1.3.1:	fixed issue where plugin commands referred to an entirely different 
 		script
 1.3.0:	changed how buying price was being determined, is now displayed properly 
@@ -96,41 +98,41 @@ contacted if you do use it in any games, just to know.
 	
 	var oldPrice = Window_ShopBuy.prototype.price;
 	Window_ShopBuy.prototype.price = function(item) {
-		price = oldPrice.call(this, item) * buyMultiplier;
-		if (DataManager.isItem(this._item)/* && this._item.itypeId === 1*/) // item
+		var buyingPrice = oldPrice.call(this, item);
+		if (DataManager.isItem(item)/* && this._item.itypeId === 1*/) // item
 		{
-			if (this._item.id in itemBuyPrices)
+			if (item.id in itemBuyPrices)
 			{
-				price = itemBuyPrices[this._item.id];
+				buyingPrice = itemBuyPrices[item.id];
 				if (explicitBuyPriceAffectedByMultiplier)
 				{
-					price = price * buyMultiplier;
+					buyingPrice = buyingPrice * buyMultiplier;
 				}
 			}
 		}
-		else if (DataManager.isWeapon(this._item)) // weapon
+		else if (DataManager.isWeapon(item)) // weapon
 		{
-			if (this._item.id in weaponBuyPrices)
+			if (item.id in weaponBuyPrices)
 			{
-				price = weaponBuyPrices[this._item.id];
+				buyingPrice = weaponBuyPrices[this._item.id];
 				if (explicitBuyPriceAffectedByMultiplier)
 				{
-					price = price * buyMultiplier;
+					buyingPrice = buyingPrice * buyMultiplier;
 				}
 			}
 		}
-		else if (DataManager.isArmor(this._item)) // armor
+		else if (DataManager.isArmor(item)) // armor
 		{
-			if (this._item.id in armorBuyPrices)
+			if (item.id in armorBuyPrices)
 			{
-				price = armorBuyPrices[this._item.id];
+				buyingPrice = armorBuyPrices[item.id];
 				if (explicitBuyPriceAffectedByMultiplier)
 				{
-					price = price * buyMultiplier;
+					buyingPrice = buyingPrice * buyMultiplier;
 				}
 			}
 		}
-		return Math.floor(price);
+		return Math.floor(buyingPrice);
 	};
 
 	// new sellingPrice function

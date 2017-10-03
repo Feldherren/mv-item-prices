@@ -1,6 +1,8 @@
-# Item Price Control v1.3.0
+# Item Price Control v1.3.2
  
 ## Changelog:
+1.3.2:	fixed issue where buying price was not changed for an item after 
+		attempting to explicitly change buying price for it
 1.3.1:	fixed issue where plugin commands referred to an entirely different 
 		script
 1.3.0:	changed how buying price was being determined, is now displayed properly 
