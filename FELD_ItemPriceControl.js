@@ -11,7 +11,7 @@
  * @default 0.5
  *
  * @param Sell Price Multiplier Affects Explicitly Set Prices
- * @desc Whether the set buy price multiplier affects explicitly set buy prices.
+ * @desc Whether the set buy price multiplier affects explicitly set buy prices; true/false
  * @default false
  *
  * @param Item Buy Price Multiplier
@@ -19,7 +19,7 @@
  * @default 1.0
  *
  * @param Buy Price Multiplier Affects Explicitly Set Prices
- * @desc Whether the set buy price multiplier affects explicitly set sell prices.
+ * @desc Whether the set buy price multiplier affects explicitly set sell prices; true/false
  * @default false
  *
  * @help Item Price Control v1.3.2, by Feldherren (rpaliwoda AT googlemail.com)
@@ -83,8 +83,8 @@ contacted if you do use it in any games, just to know.
 	var parameters = PluginManager.parameters('FELD_ItemPriceControl');
 	
 	var shopSellPriceDependentOnShopBuyPrice = (parameters["Item Sell Price Dependent on Shop Price"] == 'shop');
-	var sellMultiplier = parseFloat(parameters["Item Sell Price Multiplier"]);
-	var buyMultiplier = parseFloat(parameters["Item Buy Price Multiplier"]);
+	var generalSellMultiplier = parseFloat(parameters["Item Sell Price Multiplier"]);
+	var generalBuyMultiplier = parseFloat(parameters["Item Buy Price Multiplier"]);
 	var explicitSellPriceAffectedByMultiplier = (parameters["Sell Price Multiplier Affects Explicitly Set Prices"] == 'true');
 	var explicitBuyPriceAffectedByMultiplier = (parameters["Buy Price Multiplier Affects Explicitly Set Prices"] == 'true');
 	
@@ -99,6 +99,8 @@ contacted if you do use it in any games, just to know.
 	var oldPrice = Window_ShopBuy.prototype.price;
 	Window_ShopBuy.prototype.price = function(item) {
 		var buyingPrice = oldPrice.call(this, item);
+		// calculating buyMultiplier
+		var buyMultiplier = generalBuyMultiplier;
 		if (DataManager.isItem(item)/* && this._item.itypeId === 1*/) // item
 		{
 			if (item.id in itemBuyPrices)
@@ -140,6 +142,8 @@ contacted if you do use it in any games, just to know.
 	Scene_Shop.prototype.sellingPrice = function() {
 		// calls the old method.
 		var sellingPrice = oldSellingPrice.call(this);
+		// calculating sellMultiplier
+		var sellMultiplier = generalSellMultiplier;
 		// check that shopSellPriceDependentOnShopBuyPrice is true
 		if (shopSellPriceDependentOnShopBuyPrice) // dependent on shop value
 		{
@@ -206,7 +210,7 @@ contacted if you do use it in any games, just to know.
 		}
 		else if(command == "SELLINGMULTIPLIER" && args[0] != null)
 		{
-			sellMultiplier = parseFloat(args[0]);
+			generalSellMultiplier = parseFloat(args[0]);
 		}
 		else if(command == "SELLINGMULTIPLIERAFFECTSSETPRICES" && args[0] != null)
 		{
@@ -221,7 +225,7 @@ contacted if you do use it in any games, just to know.
 		}
 		else if(command == "BUYINGMULTIPLIER" && args[0] != null)
 		{
-			buyMultiplier = parseFloat(args[0]);
+			generalBuyMultiplier = parseFloat(args[0]);
 		}
 		else if(command == "BUYINGMULTIPLIERAFFECTSSETPRICES" && args[0] != null)
 		{
