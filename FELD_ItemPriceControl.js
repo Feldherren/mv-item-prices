@@ -51,16 +51,29 @@ of 1.1, a selling price multiplier of 1.0, and the item price is set to
 Finally, allows you to outright set buy and sell prices (which overrides 
 the above settings), and unset the same.
 
+Notebox tags:
+Items, Weapons and Armor:
+<category:name>
+<category:name,name>
+Assigns a category to the item, weapon or armour. Multiple categories
+can be separated via commas.
+
 Plugin commands:
 SETSELLPRICEDEPENDENCY [shop|database]
 Changes whether the sell price is dependent on the shop value, or the 
 database value, of an item.
 SELLINGMULTIPLIER [float]
 Changes the sell-price multiplier to the specified float. 
+CATEGORYSELLINGMULTIPLIER [category] [float]
+Changes the sell-price multiplier for the specified category to the 
+specified float. 
 SELLINGMULTIPLIERAFFECTSSETPRICES [true|false]
 Sets whether the selling multiplier is applied to explicitly-set prices.
 BUYINGMULTIPLIER [float]
 Changes the buy-price multiplier to the specified float. 
+CATEGORYBUYINGMULTIPLIER [category] [float]
+Changes the sell-price multiplier for the specified category to the 
+specified float. 
 BUYINGMULTIPLIERAFFECTSSETPRICES [true|false]
 Sets whether the buying multiplier is applied to explicitly-set prices.
 SETSELLPRICE [item|weapon|armor] [id] [price]
@@ -88,6 +101,9 @@ contacted if you do use it in any games, just to know.
 	var explicitSellPriceAffectedByMultiplier = (parameters["Sell Price Multiplier Affects Explicitly Set Prices"] == 'true');
 	var explicitBuyPriceAffectedByMultiplier = (parameters["Buy Price Multiplier Affects Explicitly Set Prices"] == 'true');
 	
+	var categoryBuyMultipliers = new Object();
+	var categorySellMultipliers = new Object();
+	
 	var itemBuyPrices = new Object();
 	var weaponBuyPrices = new Object();
 	var armorBuyPrices = new Object();
@@ -101,6 +117,12 @@ contacted if you do use it in any games, just to know.
 		var buyingPrice = oldPrice.call(this, item);
 		// calculating buyMultiplier
 		var buyMultiplier = generalBuyMultiplier;
+		var categories = [];
+		if (item.meta.category)
+		{
+			categories = item.meta.category.split(',');
+		}
+		console.log(item.name, ": ", categories);
 		if (DataManager.isItem(item)/* && this._item.itypeId === 1*/) // item
 		{
 			if (item.id in itemBuyPrices)
@@ -212,6 +234,12 @@ contacted if you do use it in any games, just to know.
 		{
 			generalSellMultiplier = parseFloat(args[0]);
 		}
+		else if(command == "CATEGORYSELLINGMULTIPLIER" && args[0] != null && args[1] != null)
+		{
+			categorySellMultipliers[args[0]] = parseFloat(args[1]);
+			// console.log("selling: ", args[0], args[1]);
+			// console.log("selling: ", categorySellMultipliers);
+		}
 		else if(command == "SELLINGMULTIPLIERAFFECTSSETPRICES" && args[0] != null)
 		{
 			if (args[0] == 'true')
@@ -226,6 +254,12 @@ contacted if you do use it in any games, just to know.
 		else if(command == "BUYINGMULTIPLIER" && args[0] != null)
 		{
 			generalBuyMultiplier = parseFloat(args[0]);
+		}
+		else if(command == "CATEGORYBUYINGMULTIPLIER" && args[0] != null && args[1] != null)
+		{
+			categoryBuyMultipliers[args[0]] = parseFloat(args[1]);
+			// console.log("buying: ", args[0], args[1]);
+			// console.log("buying: ", categoryBuyMultipliers);
 		}
 		else if(command == "BUYINGMULTIPLIERAFFECTSSETPRICES" && args[0] != null)
 		{
