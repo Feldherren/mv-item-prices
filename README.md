@@ -1,4 +1,4 @@
-# Item Price Control v1.4.1
+# Item Price Control v1.4.2
  
 ## Changelog:
 #### 1.4.2
