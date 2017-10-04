@@ -22,9 +22,11 @@
  * @desc Whether the buy price multiplier affects explicitly set sell prices; true/false
  * @default false
  *
- * @help Item Price Control v1.4.1, by Feldherren (rpaliwoda AT googlemail.com)
+ * @help Item Price Control v1.4.2, by Feldherren (rpaliwoda AT googlemail.com)
  
 Changelog:
+1.4.2:	fixed bug where category sell multipliers weren't being applied; instead
+		category buy multipliers were applied when trying to sell items.
 1.4.1:	fixed bug where attempting to sell items would cause an error, and another
 		issue where attempting to sell items with item price determined by shop
 		price, when the item was not in the shop, would result in a price of 0
@@ -189,17 +191,24 @@ contacted if you do use it in any games, just to know.
 		// calculating sellMultiplier
 		var sellMultiplier = generalSellMultiplier;
 		var categories = [];
+		console.log(this._item); // good
+		console.log(this._item.meta.category); // good
 		if (this._item.meta.category)
 		{
 			categories = this._item.meta.category.split(',');
 		}
+		console.log(categories);
 		for (i in categories)
 		{
-			if (categories[i] in categoryBuyMultipliers)
+			console.log(i);
+			if (categories[i] in categorySellMultipliers)
 			{
+				console.log(categorySellMultipliers[categories[i]]);
 				sellMultiplier = sellMultiplier * categorySellMultipliers[categories[i]];
 			}
 		}
+		console.log(categorySellMultipliers);		
+		console.log(sellMultiplier);
 		
 		// this._buyWindow._shopGoods is an array of arrays
 		// each array in the array is an item/weapon/armour in the shop

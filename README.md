@@ -1,6 +1,8 @@
 # Item Price Control v1.4.1
  
 ## Changelog:
+#### 1.4.2
+Fixed bug where category sell multipliers weren't being applied; instead category buy multipliers were applied when trying to sell items.
 #### 1.4.1
 Fixed bug where attempting to sell items would cause an error, and another issue where attempting to sell items with item price determined by shop price, when the item was not in the shop, would result in a price of 0 being offered, and a related issue where selling price wasn't properly calculated for weapons and armour. Also fixed a bug where database buying price wasn't getting the buying multiplier applied.
 #### 1.4.0
