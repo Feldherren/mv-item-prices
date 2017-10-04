@@ -1,20 +1,22 @@
-# Item Price Control v1.4.0
+# Item Price Control v1.4.1
  
 ## Changelog:
+#### 1.4.1
+Fixed bug where attempting to sell items would cause an error, and another issue where attempting to sell items with item price determined by shop price, when the item was not in the shop, would result in a price of 0 being offered, and a related issue where selling price wasn't properly calculated for weapons and armour. Also fixed a bug where database buying price wasn't getting the buying multiplier applied.
 #### 1.4.0
 Now handles item categories; you can apply categories to items, weapons and armour, and set multipliers for each category.
 #### 1.3.2
-fixed issue where buying price was not changed for an item after attempting to explicitly change buying price for it
+fixed issue where buying price was not changed for an item after attempting to explicitly change buying price for it.
 #### 1.3.1
-fixed issue where plugin commands referred to an entirely different script
+fixed issue where plugin commands referred to an entirely different script.
 #### 1.3.0
-changed how buying price was being determined, is now displayed properly in shop item list
+changed how buying price was being determined, is now displayed properly in shop item list.
 #### 1.2.0
-can now set item buy price multipler via plugin parameter and command
+can now set item buy price multipler via plugin parameter and command.
 #### 1.1.0
-can now explicitly set item buy and sell prices
+can now explicitly set item buy and sell prices.
 #### 1.0.0
-initial commit
+initial commit.
 
 ## Description
  

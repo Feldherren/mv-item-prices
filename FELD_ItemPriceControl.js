@@ -22,9 +22,15 @@
  * @desc Whether the buy price multiplier affects explicitly set sell prices; true/false
  * @default false
  *
- * @help Item Price Control v1.4.0, by Feldherren (rpaliwoda AT googlemail.com)
+ * @help Item Price Control v1.4.1, by Feldherren (rpaliwoda AT googlemail.com)
  
 Changelog:
+1.4.1:	fixed bug where attempting to sell items would cause an error, and another
+		issue where attempting to sell items with item price determined by shop
+		price, when the item was not in the shop, would result in a price of 0
+		being offered, and a related issue where selling price wasn't properly
+		calculated for weapons and armour. Also fixed a bug where database buying 
+		price wasn't getting the buying multiplier applied.
 1.4.0:	can now set categories for items, weapons and armor via notebox tags,
 		and apply a modifier for entire categories of items
 1.3.2:	fixed issue where buying price was not changed for an item after 
@@ -138,6 +144,7 @@ contacted if you do use it in any games, just to know.
 				buyMultiplier = buyMultiplier * categoryBuyMultipliers[categories[i]];
 			}
 		}
+		buyingPrice = buyingPrice * buyMultiplier;
 		if (DataManager.isItem(item)/* && this._item.itypeId === 1*/) // item
 		{
 			if (item.id in itemBuyPrices)
@@ -182,9 +189,9 @@ contacted if you do use it in any games, just to know.
 		// calculating sellMultiplier
 		var sellMultiplier = generalSellMultiplier;
 		var categories = [];
-		if (item.meta.category)
+		if (this._item.meta.category)
 		{
-			categories = item.meta.category.split(',');
+			categories = this._item.meta.category.split(',');
 		}
 		for (i in categories)
 		{
@@ -193,13 +200,56 @@ contacted if you do use it in any games, just to know.
 				sellMultiplier = sellMultiplier * categorySellMultipliers[categories[i]];
 			}
 		}
+		
+		// this._buyWindow._shopGoods is an array of arrays
+		// each array in the array is an item/weapon/armour in the shop
+		// index 0 is item type: 0 for item, 1 for weapon, 2 for armour
+		// index 1 is item ID within the category
+		
+		var itemType = null;
+		if (DataManager.isItem(this._item)/* && this._item.itypeId === 1*/) // item
+		{
+			itemType = 0;
+		}
+		else if (DataManager.isWeapon(this._item)) // weapon
+		{
+			itemType = 1;
+		}
+		else if (DataManager.isArmor(this._item)) // armor
+		{
+			itemType = 2;
+		}
+		
+		var itemInShop = false
+		for (var i in this._buyWindow._shopGoods)
+		{
+			if (this._buyWindow._shopGoods[i][0] === itemType)
+			{
+				if (this._buyWindow._shopGoods[i][1] === this._item.id)
+				{
+					itemInShop = true;
+					break;
+				}
+			}
+		}
+		
 		// check that shopSellPriceDependentOnShopBuyPrice is true
 		if (shopSellPriceDependentOnShopBuyPrice) // dependent on shop value
 		{
-			sellingPrice = this._buyWindow.price(this._item) * sellMultiplier;
+			if (itemInShop)
+			{
+				// item is in shop, use shop price for calculating sell value
+				sellingPrice = this._buyWindow.price(this._item) * sellMultiplier;
+			}
+			else
+			{
+				// item is not in shop, use database price for calculating sell value
+				sellingPrice = this._item.price * sellMultiplier;
+			}
 		}
 		else // dependent on database value
 		{
+			// selling prices are dependent on database value
 			sellingPrice = this._item.price * sellMultiplier;
 		}
 		
